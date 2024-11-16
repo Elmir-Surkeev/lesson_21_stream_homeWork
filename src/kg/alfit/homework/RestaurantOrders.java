@@ -6,7 +6,9 @@ import kg.alfit.homework.domain.Order;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class RestaurantOrders {
     // Этот блок кода менять нельзя! НАЧАЛО!
@@ -49,6 +51,67 @@ public class RestaurantOrders {
                     System.out.println("______________________________________");
         });
     }
+
+    public List<Order> moreExpensiveOrders(int n){
+        return orders.stream()
+                .sorted(Comparator.comparingDouble(Order::getTotal).reversed())
+                .limit(n)
+                .collect(Collectors.toList());
+    }
+
+
+    public List<Order> moreCheaperOrders(int n){
+        return orders.stream()
+                .sorted(Comparator.comparingDouble(Order::getTotal).reversed())
+                .limit(n)
+                .collect(Collectors.toList());
+    }
+
+    public List<Order> printHaveDelivery(){
+        return orders.stream()
+                .filter(order -> order.isHomeDelivery())
+                .toList();
+    }
+
+
+    public List<Order> getOrdersWithinRange(double minOrderTotal, double maxOrderTotal) {
+        return orders.stream()
+                .filter(order -> order.getTotal() > minOrderTotal && order.getTotal() < maxOrderTotal)
+                .collect(Collectors.toList());
+    }
+
+    public double calculateTotalCost() {
+        return orders.stream()
+                .mapToDouble(Order::getTotal)
+                .sum();
+    }
+
+    public List<String> getUniqueSortedEmails() {
+        Set<String> emailSet = new HashSet<>();
+        List<String> sortedEmails = new ArrayList<>();
+
+        for (Order order : orders) {
+            String email = order.getCustomer().getEmail();
+//
+        }
+
+        return sortedEmails;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Наполните этот класс решением домашнего задания.
     // Вам необходимо создать все необходимые методы
     // для решения заданий из домашки :)
