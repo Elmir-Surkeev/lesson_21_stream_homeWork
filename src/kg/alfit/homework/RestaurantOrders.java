@@ -36,7 +36,19 @@ public class RestaurantOrders {
     //----------------------------------------------------------------------
     //------   Реализация ваших методов должна быть ниже этой линии   ------
     //----------------------------------------------------------------------
-
+    public void printOrders(){
+        orders.forEach(order -> {
+                    System.out.println("Customer: " + order.getCustomer().getFullName());
+                    System.out.println("Email: " + order.getCustomer().getEmail());
+                    System.out.println("Home Delivery: " + (order.isHomeDelivery() ? "Yes" : "No"));
+                    System.out.println("Total: $" + order.getTotal());
+                    System.out.println("Items:");
+                    order.getItems().forEach(item -> {
+                        System.out.println("-" + item.getName() + item.getAmount() + "price: " + item.getPrice());
+                    });
+                    System.out.println("______________________________________");
+        });
+    }
     // Наполните этот класс решением домашнего задания.
     // Вам необходимо создать все необходимые методы
     // для решения заданий из домашки :)

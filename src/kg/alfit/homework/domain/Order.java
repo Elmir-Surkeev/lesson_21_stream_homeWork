@@ -54,6 +54,9 @@ public class Order {
     //----------------------------------------------------------------------
 
     public void calculateTotal() {
-        throw new NotImplementedException("Вам надо реализовать этот метод!");
+        double totalBudget = items.stream()
+                .mapToDouble(item -> item.getPrice())
+                .sum();
+        System.out.println("Total budget: " + totalBudget);
     }
 }
