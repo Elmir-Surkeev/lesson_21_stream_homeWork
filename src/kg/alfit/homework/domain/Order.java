@@ -54,9 +54,9 @@ public class Order {
     //----------------------------------------------------------------------
 
     public void calculateTotal() {
-        double totalBudget = items.stream()
-                .mapToDouble(item -> item.getPrice())
+        double total = items.stream()
+                .mapToDouble(item -> item.getPrice() * item.getAmount())
                 .sum();
-        System.out.println("Total budget: " + totalBudget);
+        System.out.println("Total budget: " + total);
     }
 }
