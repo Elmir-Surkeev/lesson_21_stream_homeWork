@@ -1,6 +1,7 @@
 package kg.alfit.homework;
 
 import com.google.gson.Gson;
+import kg.alfit.homework.domain.Item;
 import kg.alfit.homework.domain.Order;
 
 import java.io.IOException;
@@ -82,9 +83,11 @@ public class RestaurantOrders {
 
     public double calculateTotalCost() {
         return orders.stream()
-                .mapToDouble(Order::getTotal)
+                .flatMap(order -> order.getItems().stream())
+                .mapToDouble(Item::getPrice)
                 .sum();
     }
+
 
     public List<String> getUniqueSortedEmails() {
         Set<String> emailSet = new HashSet<>();
@@ -92,22 +95,52 @@ public class RestaurantOrders {
 
         for (Order order : orders) {
             String email = order.getCustomer().getEmail();
-//
+            if (emailSet.add(email)) {
+                int insertionPoint = 0;
+                while (insertionPoint < sortedEmails.size() && sortedEmails.get(insertionPoint).compareTo(email) < 0) {
+                    insertionPoint++;
+                }
+                sortedEmails.add(insertionPoint, email);
+            }
         }
 
         return sortedEmails;
     }
+    public Map<String, List<Order>> getOrdersGroupedByCustomerName() {
+        return orders.stream()
+                .collect(Collectors.groupingBy(order -> order.getCustomer().getFullName()));
+    }
 
+    public Map<String, Double> getTotalOrdersByCustomer() {
+        return orders.stream()
+                .collect(Collectors.groupingBy(
+                        order -> order.getCustomer().getFullName(),
+                        Collectors.summingDouble(Order::getTotal)
+                ));
+    }
 
+    public String getCustomerWithMaxTotalOrders() {
+        return getTotalOrdersByCustomer().entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
+    }
 
+    public String getCustomerWithMinTotalOrders() {
+        return getTotalOrdersByCustomer().entrySet().stream()
+                .min(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
+    }
 
-
-
-
-
-
-
-
+    public Map<String, Long> getProductsGroupedByQuantity() {
+        return orders.stream()
+                .flatMap(order -> order.getItems().stream())
+                .collect(Collectors.groupingBy(
+                        Item::getName,
+                        Collectors.summingLong(Item::getAmount)
+                ));
+    }
 
 
 
